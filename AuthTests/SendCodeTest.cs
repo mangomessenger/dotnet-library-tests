@@ -3,7 +3,6 @@ using FluentAssertions;
 using NUnit.Framework;
 using ServicesLibrary.Exceptions.Auth;
 using ServicesLibrary.Interfaces;
-using ServicesLibrary.Models;
 using ServicesLibrary.Models.Payload;
 
 namespace ServicesTest.AuthTests
@@ -69,7 +68,7 @@ namespace ServicesTest.AuthTests
             var sendCodePayload = new SendCodePayload(phone, countryCode, fingerPrint);
             Action a = () => _authService.SendCode(sendCodePayload);
             a.Should().Throw<InvalidFingerprintFormatException>()
-                .WithMessage("Fingerprint length must be 10 or more digits");
+                .WithMessage("Fingerprint length must be 5 or more digits");
         }
     }
 }
