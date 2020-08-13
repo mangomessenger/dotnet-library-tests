@@ -4,6 +4,7 @@ using NUnit.Framework;
 using ServicesLibrary.Exceptions.Auth;
 using ServicesLibrary.Interfaces;
 using ServicesLibrary.Models;
+using ServicesLibrary.Models.Payload;
 
 namespace ServicesTest.AuthTests
 {

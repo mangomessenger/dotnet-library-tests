@@ -5,6 +5,7 @@ using NUnit.Framework;
 using ServicesLibrary.Interfaces;
 using ServicesLibrary.MapperFiles;
 using ServicesLibrary.Models;
+using ServicesLibrary.Models.Payload;
 
 namespace ServicesTest.AuthTests
 {
