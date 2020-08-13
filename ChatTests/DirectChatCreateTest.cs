@@ -2,6 +2,7 @@
 using AutoMapper;
 using FluentAssertions;
 using NUnit.Framework;
+using ServicesLibrary.ChatTypes;
 using ServicesLibrary.Interfaces;
 using ServicesLibrary.MapperFiles;
 using ServicesLibrary.Models.Payload;
@@ -54,6 +55,7 @@ namespace ServicesTest.ChatTests
                 Username = "dnldcode"
             };
             var chat = chatService.CreateDirectChat(createChatPayload);
+            chat.ChatType.Should().Be(TypesOfChat.DirectChat);
             chat.Members.Count.Should().Be(2);
             chat.Members[0].Username.Should().Be("dnldcode");
             chat.Members[1].Name.Should().Be(name);

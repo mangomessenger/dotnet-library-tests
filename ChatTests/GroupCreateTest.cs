@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using AutoMapper;
 using FluentAssertions;
 using NUnit.Framework;
+using ServicesLibrary.ChatTypes;
 using ServicesLibrary.Interfaces;
 using ServicesLibrary.MapperFiles;
 using ServicesLibrary.Models.Payload;
@@ -57,11 +58,16 @@ namespace ServicesTest.ChatTests
             };
 
             var group = groupService.CreateGroup(groupPayload);
+            group.Title.Should().Be("WSB the best");
+            group.Description.Should().BeNull();
             group.MembersCount.Should().Be(3);
+            group.ChatType.Should().Be(TypesOfChat.Group);
+            group.PhotoUrl.Should().BeNull();
             group.Creator.Name.Should().Be(name);
             group.Members[2].Name.Should().Be(name);
             group.Members[1].Username.Should().Be("dnldcode");
             group.Members[0].Username.Should().Be("arslanbek");
+            group.UpdatedAt.Should().BeGreaterThan(0);
         }
     }
 }
