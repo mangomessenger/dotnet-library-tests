@@ -11,13 +11,13 @@ using ServicesLibrary.Services;
 namespace ServicesTest.ChatTests
 {
     [TestFixture]
-    public class ChannelCreateTest
+    public class GroupCreateTest
     {
         private readonly IAuthService _authService = new AuthService();
         private static readonly Mapper Mapper = MapperFactory.GetMapperInstance();
-
+        
         [Test]
-        public void ChannelCreateValidTest()
+        public void CreateGroupValidTest()
         {
             // send code part
             var phone = new Random().Next(500000000, 900000000).ToString();
@@ -48,21 +48,20 @@ namespace ServicesTest.ChatTests
             session.User.Verified.Should().BeFalse();
             session.Tokens.AccessToken.Should().NotBeNullOrEmpty();
             session.Tokens.RefreshToken.Should().NotBeNullOrEmpty();
-
-            var channelServices = new ChannelService(session);
-            var channelPayload = new CreateCommunityPayload
+            
+            var groupService = new GroupService(session);
+            var groupPayload = new CreateCommunityPayload
             {
                 Title = "WSB the best",
                 Usernames = new List<string> {"dnldcode", "arslanbek"}
             };
 
-            var channel = channelServices.CreateChannel(channelPayload);
-            channel.MembersCount.Should().Be(3);
-            channel.Members[2].Name.Should().Be(name);
-            channel.Members[1].Username.Should().Be("dnldcode");
-            channel.Members[0].Username.Should().Be("arslanbek");
-            channel.Verified.Should().BeFalse();
-            channel.UpdatedAt.Should().BeGreaterThan(0);
+            var group = groupService.CreateGroup(groupPayload);
+            group.MembersCount.Should().Be(3);
+            group.Creator.Name.Should().Be(name);
+            group.Members[2].Name.Should().Be(name);
+            group.Members[1].Username.Should().Be("dnldcode");
+            group.Members[0].Username.Should().Be("arslanbek");
         }
     }
 }
