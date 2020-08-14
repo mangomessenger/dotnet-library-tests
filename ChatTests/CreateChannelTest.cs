@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using AutoMapper;
 using FluentAssertions;
 using NUnit.Framework;
@@ -11,13 +12,13 @@ using ServicesLibrary.Services;
 namespace ServicesTest.ChatTests
 {
     [TestFixture]
-    public class DirectChatCreateTest
+    public class CreateChannelTest
     {
         private readonly IAuthService _authService = new AuthService();
         private static readonly Mapper Mapper = MapperFactory.GetMapperInstance();
 
         [Test]
-        public void CreateDirectChatTest()
+        public void Create_Channel_Test()
         {
             // send code part
             var phone = new Random().Next(500000000, 900000000).ToString();
@@ -48,18 +49,28 @@ namespace ServicesTest.ChatTests
             session.User.Verified.Should().BeFalse();
             session.Tokens.AccessToken.Should().NotBeNullOrEmpty();
             session.Tokens.RefreshToken.Should().NotBeNullOrEmpty();
-            
-            var chatService = new ChatService(session);
-            var createChatPayload = new CreateDirectChatPayload
+
+            var channelServices = new ChannelService(session);
+            var channelPayload = new CreateCommunityPayload
             {
-                Username = "petrokolosov"
+                Title = "WSB the best",
+                Usernames = new List<string> {"dnldcode", "arslanbek", "petrokolosov"}
             };
-            var chat = chatService.CreateDirectChat(createChatPayload);
-            chat.ChatType.Should().Be(TypesOfChat.DirectChat);
-            chat.Members.Count.Should().Be(2);
-            chat.Members[0].Username.Should().Be("petrokolosov");
-            chat.Members[1].Name.Should().Be(name);
-            chat.UpdatedAt.Should().BeGreaterThan(0);
+
+            var channel = channelServices.CreateChannel(channelPayload);
+            channel.Title.Should().Be("WSB the best");
+            channel.Description.Should().BeNull();
+            channel.Creator.Name.Should().Be(name);
+            channel.ChatType.Should().Be(TypesOfChat.Channel);
+            channel.Tag.Should().BeNull();
+            channel.PhotoUrl.Should().BeNull();
+            channel.MembersCount.Should().Be(4);
+            channel.Members[3].Name.Should().Be(name);
+            channel.Members[2].Username.Should().Be("petrokolosov");
+            channel.Members[1].Username.Should().Be("dnldcode");
+            channel.Members[0].Username.Should().Be("arslanbek");
+            channel.Verified.Should().BeFalse();
+            channel.UpdatedAt.Should().BeGreaterThan(0);
         }
     }
 }

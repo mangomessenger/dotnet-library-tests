@@ -17,7 +17,7 @@ namespace ServicesTest.MessageTests.Post
         private static readonly Mapper Mapper = MapperFactory.GetMapperInstance();
         
         [Test]
-        public void SendMessageDirectValidTest()
+        public void Send_Direct_Message_Test()
         {
             // send code part
             var phone = new Random().Next(500000000, 900000000).ToString();

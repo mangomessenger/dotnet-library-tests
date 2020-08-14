@@ -18,7 +18,7 @@ namespace ServicesTest.MessageTests.Post
         private static readonly Mapper Mapper = MapperFactory.GetMapperInstance();
 
         [Test]
-        public void SendChannelMessageValidTest()
+        public void Send_Channel_Message_Test()
         {
             // send code part
             var phone = new Random().Next(500000000, 900000000).ToString();

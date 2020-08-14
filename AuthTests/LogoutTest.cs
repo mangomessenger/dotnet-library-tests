@@ -15,7 +15,7 @@ namespace ServicesTest.AuthTests
         private static readonly Mapper Mapper = MapperFactory.GetMapperInstance();
 
         [Test]
-        public void Logout_Valid_Test()
+        public void Logout_Test()
         {
             // send code part
             var phone = new Random().Next(500000000, 900000000).ToString();

@@ -9,16 +9,16 @@ using ServicesLibrary.MapperFiles;
 using ServicesLibrary.Models.Payload;
 using ServicesLibrary.Services;
 
-namespace ServicesTest.ChatTests
+namespace ServicesTest.MessageTests.Put
 {
     [TestFixture]
-    public class GroupCreateTest
+    public class UpdateGroupMessageTest
     {
         private readonly IAuthService _authService = new AuthService();
         private static readonly Mapper Mapper = MapperFactory.GetMapperInstance();
         
         [Test]
-        public void CreateGroupValidTest()
+        public void Update_Group_Message_Test()
         {
             // send code part
             var phone = new Random().Next(500000000, 900000000).ToString();
@@ -69,6 +69,18 @@ namespace ServicesTest.ChatTests
             group.Members[1].Username.Should().Be("dnldcode");
             group.Members[0].Username.Should().Be("arslanbek");
             group.UpdatedAt.Should().BeGreaterThan(0);
+            
+            var messageService = new MessageService(session);
+            var message = messageService.SendMessage(group, "this is test message");
+            message.MessageText.Should().Be("this is test message");
+            message = messageService.SendMessage(group, "this is another test message");
+            message.MessageText.Should().Be("this is another test message");
+            
+            var messageId = message.Id;
+            var updateMessage = messageService.UpdateMessage(message, "this is updated message");
+            updateMessage.Should().BeNullOrEmpty();
+            var updatedMessage = messageService.GetMessageById(messageId);
+            updatedMessage.MessageText.Should().Be("this is updated message");
         }
     }
 }

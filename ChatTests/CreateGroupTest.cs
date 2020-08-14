@@ -9,16 +9,16 @@ using ServicesLibrary.MapperFiles;
 using ServicesLibrary.Models.Payload;
 using ServicesLibrary.Services;
 
-namespace ServicesTest.MessageTests.Get
+namespace ServicesTest.ChatTests
 {
     [TestFixture]
-    public class GetChannelMessagesTest
+    public class CreateGroupTest
     {
         private readonly IAuthService _authService = new AuthService();
         private static readonly Mapper Mapper = MapperFactory.GetMapperInstance();
         
         [Test]
-        public void Get_Channel_Messages_Test()
+        public void Create_Group_Test()
         {
             // send code part
             var phone = new Random().Next(500000000, 900000000).ToString();
@@ -49,38 +49,26 @@ namespace ServicesTest.MessageTests.Get
             session.User.Verified.Should().BeFalse();
             session.Tokens.AccessToken.Should().NotBeNullOrEmpty();
             session.Tokens.RefreshToken.Should().NotBeNullOrEmpty();
-
-            var channelServices = new ChannelService(session);
-            var channelPayload = new CreateCommunityPayload
+            
+            var groupService = new GroupService(session);
+            var groupPayload = new CreateCommunityPayload
             {
                 Title = "WSB the best",
                 Usernames = new List<string> {"dnldcode", "arslanbek", "petrokolosov"}
             };
 
-            var channel = channelServices.CreateChannel(channelPayload);
-            channel.Title.Should().Be("WSB the best");
-            channel.Description.Should().BeNull();
-            channel.Creator.Name.Should().Be(name);
-            channel.ChatType.Should().Be(TypesOfChat.Channel);
-            channel.Tag.Should().BeNull();
-            channel.PhotoUrl.Should().BeNull();
-            channel.MembersCount.Should().Be(4);
-            channel.Members[3].Name.Should().Be(name);
-            channel.Members[2].Username.Should().Be("petrokolosov");
-            channel.Members[1].Username.Should().Be("dnldcode");
-            channel.Members[0].Username.Should().Be("arslanbek");
-            channel.Verified.Should().BeFalse();
-            channel.UpdatedAt.Should().BeGreaterThan(0);
-
-            var messageService = new MessageService(session);
-            var message = messageService.SendMessage(channel, "this is test message");
-            message.MessageText.Should().Be("this is test message");
-            message = messageService.SendMessage(channel, "this is another test message");
-            message.MessageText.Should().Be("this is another test message");
-
-            var channelMessages = messageService.GetMessages(channel, out var response);
-            response.Should().BeNullOrEmpty();
-            channelMessages.Should().NotBeNull();
+            var group = groupService.CreateGroup(groupPayload);
+            group.Title.Should().Be("WSB the best");
+            group.Description.Should().BeNull();
+            group.MembersCount.Should().Be(4);
+            group.ChatType.Should().Be(TypesOfChat.Group);
+            group.PhotoUrl.Should().BeNull();
+            group.Creator.Name.Should().Be(name);
+            group.Members[3].Name.Should().Be(name);
+            group.Members[2].Username.Should().Be("petrokolosov");
+            group.Members[1].Username.Should().Be("dnldcode");
+            group.Members[0].Username.Should().Be("arslanbek");
+            group.UpdatedAt.Should().BeGreaterThan(0);
         }
     }
 }

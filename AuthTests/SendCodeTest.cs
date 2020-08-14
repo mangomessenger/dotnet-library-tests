@@ -13,7 +13,7 @@ namespace ServicesTest.AuthTests
         private readonly IAuthService _authService = new ServicesLibrary.Services.AuthService();
 
         [Test]
-        public void SendCode_Valid_Test()
+        public void Send_Code_Test()
         {
             var phone = new Random().Next(500000000, 900000000).ToString();
             var countryCode = "PL";

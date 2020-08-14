@@ -12,13 +12,13 @@ using ServicesLibrary.Services;
 namespace ServicesTest.MessageTests.Get
 {
     [TestFixture]
-    public class GetChannelMessagesTest
+    public class GetChannelMessageByIdTest
     {
         private readonly IAuthService _authService = new AuthService();
         private static readonly Mapper Mapper = MapperFactory.GetMapperInstance();
         
         [Test]
-        public void Get_Channel_Messages_Test()
+        public void Get_Channel_Message_By_Id_Test()
         {
             // send code part
             var phone = new Random().Next(500000000, 900000000).ToString();
@@ -78,9 +78,9 @@ namespace ServicesTest.MessageTests.Get
             message = messageService.SendMessage(channel, "this is another test message");
             message.MessageText.Should().Be("this is another test message");
 
-            var channelMessages = messageService.GetMessages(channel, out var response);
-            response.Should().BeNullOrEmpty();
-            channelMessages.Should().NotBeNull();
+            var testId = message.Id;
+            var getMessage = messageService.GetMessageById(testId);
+            getMessage.MessageText.Should().Be("this is another test message");
         }
     }
 }

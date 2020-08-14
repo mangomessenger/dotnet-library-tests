@@ -7,6 +7,10 @@ This project requeres reference to the https://github.com/mangomessenger/dotnet-
 1. Send message to direct chat fails, but send to channel / group is ok
 2. Get Messages from channel fails, postman - ok, in IDE - fail
 
+## To do
+
+1. Change test methods naming according to https://docs.microsoft.com/pl-pl/dotnet/core/testing/unit-testing-best-practices
+
 ## Roadmap
 
 - Authorization api endpoints tested succesfully

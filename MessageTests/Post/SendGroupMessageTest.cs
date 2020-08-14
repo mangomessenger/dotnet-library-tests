@@ -19,7 +19,7 @@ namespace ServicesTest.MessageTests.Post
         
         
         [Test]
-        public void SendGroupMessageValidTest()
+        public void Send_Group_Message_Test()
         {
             // send code part
             var phone = new Random().Next(500000000, 900000000).ToString();
@@ -72,10 +72,10 @@ namespace ServicesTest.MessageTests.Post
             group.UpdatedAt.Should().BeGreaterThan(0);
             
             var messageService = new MessageService(session);
-            var groupMessage = messageService.SendMessage(group, "this is test message");
-            groupMessage.MessageText.Should().Be("this is test message");
-            groupMessage = messageService.SendMessage(group, "this is another test message");
-            groupMessage.MessageText.Should().Be("this is another test message");
+            var message = messageService.SendMessage(group, "this is test message");
+            message.MessageText.Should().Be("this is test message");
+            message = messageService.SendMessage(group, "this is another test message");
+            message.MessageText.Should().Be("this is another test message");
         }
     }
 }

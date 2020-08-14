@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using AutoMapper;
 using FluentAssertions;
 using NUnit.Framework;
@@ -9,16 +8,16 @@ using ServicesLibrary.MapperFiles;
 using ServicesLibrary.Models.Payload;
 using ServicesLibrary.Services;
 
-namespace ServicesTest.MessageTests.Get
+namespace ServicesTest.MessageTests.Delete
 {
     [TestFixture]
-    public class GetMessageByIdTest
+    public class DeleteDirectMessageTest
     {
         private readonly IAuthService _authService = new AuthService();
         private static readonly Mapper Mapper = MapperFactory.GetMapperInstance();
         
         [Test]
-        public void GetChannelMessageById()
+        public void Delete_Direct_Message_Test()
         {
             // send code part
             var phone = new Random().Next(500000000, 900000000).ToString();
@@ -50,37 +49,29 @@ namespace ServicesTest.MessageTests.Get
             session.Tokens.AccessToken.Should().NotBeNullOrEmpty();
             session.Tokens.RefreshToken.Should().NotBeNullOrEmpty();
 
-            var channelServices = new ChannelService(session);
-            var channelPayload = new CreateCommunityPayload
+            var chatService = new ChatService(session);
+            var createChatPayload = new CreateDirectChatPayload
             {
-                Title = "WSB the best",
-                Usernames = new List<string> {"dnldcode", "arslanbek", "petrokolosov"}
+                Username = "dnldcode"
             };
-
-            var channel = channelServices.CreateChannel(channelPayload);
-            channel.Title.Should().Be("WSB the best");
-            channel.Description.Should().BeNull();
-            channel.Creator.Name.Should().Be(name);
-            channel.ChatType.Should().Be(TypesOfChat.Channel);
-            channel.Tag.Should().BeNull();
-            channel.PhotoUrl.Should().BeNull();
-            channel.MembersCount.Should().Be(4);
-            channel.Members[3].Name.Should().Be(name);
-            channel.Members[2].Username.Should().Be("petrokolosov");
-            channel.Members[1].Username.Should().Be("dnldcode");
-            channel.Members[0].Username.Should().Be("arslanbek");
-            channel.Verified.Should().BeFalse();
-            channel.UpdatedAt.Should().BeGreaterThan(0);
+            var directChat = chatService.CreateDirectChat(createChatPayload);
+            directChat.ChatType.Should().Be(TypesOfChat.DirectChat);
+            directChat.Members.Count.Should().Be(2);
+            directChat.Members[0].Username.Should().Be("dnldcode");
+            directChat.Members[1].Name.Should().Be(name);
+            directChat.UpdatedAt.Should().BeGreaterThan(0);
 
             var messageService = new MessageService(session);
-            var message = messageService.SendMessage(channel, "this is test message");
-            message.MessageText.Should().Be("this is test message");
-            message = messageService.SendMessage(channel, "this is another test message");
-            message.MessageText.Should().Be("this is another test message");
+            var message = messageService.SendMessage(directChat, "hello its test");
 
-            var testId = message.Id;
-            var getMessage = messageService.GetMessageById(testId);
-            getMessage.MessageText.Should().Be("this is another test message");
+            message.Id.Should().BeGreaterThan(0);
+            message.ChatId.Should().Be(directChat.Id);
+            message.MessageText.Should().Be("hello its test");
+            message.CreatedAt.Should().BeGreaterThan(0);
+            message.UpdatedAt.Should().BeGreaterThan(0);
+            
+            var deleteMessage = messageService.DeleteMessage(message);
+            deleteMessage.Should().BeNullOrEmpty();
         }
     }
 }

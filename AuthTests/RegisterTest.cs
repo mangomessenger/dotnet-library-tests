@@ -16,7 +16,7 @@ namespace ServicesTest.AuthTests
 
 
         [Test]
-        public void Register_Valid_Test()
+        public void Register_Test()
         {
             // send code part
             var phone = new Random().Next(500000000, 900000000).ToString();
