@@ -54,17 +54,18 @@ namespace ServicesTest.ChatTests
             var groupPayload = new CreateCommunityPayload
             {
                 Title = "WSB the best",
-                Usernames = new List<string> {"dnldcode", "arslanbek"}
+                Usernames = new List<string> {"dnldcode", "arslanbek", "petrokolosov"}
             };
 
             var group = groupService.CreateGroup(groupPayload);
             group.Title.Should().Be("WSB the best");
             group.Description.Should().BeNull();
-            group.MembersCount.Should().Be(3);
+            group.MembersCount.Should().Be(4);
             group.ChatType.Should().Be(TypesOfChat.Group);
             group.PhotoUrl.Should().BeNull();
             group.Creator.Name.Should().Be(name);
-            group.Members[2].Name.Should().Be(name);
+            group.Members[3].Name.Should().Be(name);
+            group.Members[2].Username.Should().Be("petrokolosov");
             group.Members[1].Username.Should().Be("dnldcode");
             group.Members[0].Username.Should().Be("arslanbek");
             group.UpdatedAt.Should().BeGreaterThan(0);

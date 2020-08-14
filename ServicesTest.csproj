@@ -18,8 +18,4 @@
       <ProjectReference Include="..\ServicesLibrary\ServicesLibrary.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="MessageTests" />
-    </ItemGroup>
-
 </Project>

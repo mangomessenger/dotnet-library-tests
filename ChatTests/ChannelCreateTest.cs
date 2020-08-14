@@ -54,7 +54,7 @@ namespace ServicesTest.ChatTests
             var channelPayload = new CreateCommunityPayload
             {
                 Title = "WSB the best",
-                Usernames = new List<string> {"dnldcode", "arslanbek"}
+                Usernames = new List<string> {"dnldcode", "arslanbek", "petrokolosov"}
             };
 
             var channel = channelServices.CreateChannel(channelPayload);
@@ -64,8 +64,9 @@ namespace ServicesTest.ChatTests
             channel.ChatType.Should().Be(TypesOfChat.Channel);
             channel.Tag.Should().BeNull();
             channel.PhotoUrl.Should().BeNull();
-            channel.MembersCount.Should().Be(3);
-            channel.Members[2].Name.Should().Be(name);
+            channel.MembersCount.Should().Be(4);
+            channel.Members[3].Name.Should().Be(name);
+            channel.Members[2].Username.Should().Be("petrokolosov");
             channel.Members[1].Username.Should().Be("dnldcode");
             channel.Members[0].Username.Should().Be("arslanbek");
             channel.Verified.Should().BeFalse();
