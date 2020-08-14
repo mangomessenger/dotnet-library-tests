@@ -11,13 +11,13 @@ using ServicesLibrary.Services;
 namespace ServicesTest.MessageTests
 {
     [TestFixture]
-    public class DirectMessageTest
+    public class SendDirectMessageTest
     {
         private readonly IAuthService _authService = new AuthService();
         private static readonly Mapper Mapper = MapperFactory.GetMapperInstance();
         
         [Test]
-        public void SendMessageDirectTest()
+        public void SendMessageDirectValidTest()
         {
             // send code part
             var phone = new Random().Next(500000000, 900000000).ToString();
@@ -63,6 +63,7 @@ namespace ServicesTest.MessageTests
             
             var messagesService = new MessageService(session);
             var sendMessage = messagesService.SendMessage(chat, "hello its test");
+            
             sendMessage.Id.Should().BeGreaterThan(0);
             sendMessage.ChatId.Should().Be(chat.Id);
             sendMessage.From.Should().Be(session.User);

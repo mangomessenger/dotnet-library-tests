@@ -12,14 +12,14 @@ using ServicesLibrary.Services;
 namespace ServicesTest.MessageTests
 {
     [TestFixture]
-    public class GroupMessageTest
+    public class SendGroupMessageTest
     {
         private readonly IAuthService _authService = new AuthService();
         private static readonly Mapper Mapper = MapperFactory.GetMapperInstance();
         
         
         [Test]
-        public void SendGroupMessageTest()
+        public void SendGroupMessageValidTest()
         {
             // send code part
             var phone = new Random().Next(500000000, 900000000).ToString();
