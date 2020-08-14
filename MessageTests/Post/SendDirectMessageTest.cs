@@ -2,27 +2,28 @@
 using AutoMapper;
 using FluentAssertions;
 using NUnit.Framework;
+using ServicesLibrary.ChatTypes;
 using ServicesLibrary.Interfaces;
 using ServicesLibrary.MapperFiles;
 using ServicesLibrary.Models.Payload;
+using ServicesLibrary.Services;
 
-namespace ServicesTest.AuthTests
+namespace ServicesTest.MessageTests.Post
 {
     [TestFixture]
-    public class RegisterTest
+    public class SendDirectMessageTest
     {
-        private readonly IAuthService _authService = new ServicesLibrary.Services.AuthService();
+        private readonly IAuthService _authService = new AuthService();
         private static readonly Mapper Mapper = MapperFactory.GetMapperInstance();
-
-
+        
         [Test]
-        public void Register_Valid_Test()
+        public void SendMessageDirectValidTest()
         {
             // send code part
             var phone = new Random().Next(500000000, 900000000).ToString();
             var countryCode = "PL";
             var fingerPrint = Faker.Lorem.Sentence();
-            
+
             var sendCodePayload = new SendCodePayload(phone, countryCode, fingerPrint);
             var authRequest = _authService.SendCode(sendCodePayload);
             authRequest.Should().NotBeNull();
@@ -31,7 +32,7 @@ namespace ServicesTest.AuthTests
             // register part
             var name = Faker.Name.FullName();
             var phoneCode = 22222;
-            
+
             var registerPayload = Mapper.Map<RegisterPayload>(authRequest);
             registerPayload.Name = name;
             registerPayload.PhoneCode = phoneCode;
@@ -47,11 +48,27 @@ namespace ServicesTest.AuthTests
             session.User.Verified.Should().BeFalse();
             session.Tokens.AccessToken.Should().NotBeNullOrEmpty();
             session.Tokens.RefreshToken.Should().NotBeNullOrEmpty();
-        }
-
-        [Test]
-        public void SignUp_Terms_Of_Service_NotAccepted_Exception_Test()
-        {
+            
+            var chatService = new ChatService(session);
+            var createChatPayload = new CreateDirectChatPayload
+            {
+                Username = "dnldcode"
+            };
+            var chat = chatService.CreateDirectChat(createChatPayload);
+            chat.ChatType.Should().Be(TypesOfChat.DirectChat);
+            chat.Members.Count.Should().Be(2);
+            chat.Members[0].Username.Should().Be("dnldcode");
+            chat.Members[1].Name.Should().Be(name);
+            chat.UpdatedAt.Should().BeGreaterThan(0);
+            
+            var messagesService = new MessageService(session);
+            var sendMessage = messagesService.SendMessage(chat, "hello its test");
+            
+            sendMessage.Id.Should().BeGreaterThan(0);
+            sendMessage.ChatId.Should().Be(chat.Id);
+            sendMessage.MessageText.Should().Be("hello its test");
+            sendMessage.CreatedAt.Should().BeGreaterThan(0);
+            sendMessage.UpdatedAt.Should().BeGreaterThan(0);
         }
     }
 }

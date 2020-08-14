@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using AutoMapper;
 using FluentAssertions;
 using NUnit.Framework;
@@ -9,17 +8,16 @@ using ServicesLibrary.MapperFiles;
 using ServicesLibrary.Models.Payload;
 using ServicesLibrary.Services;
 
-namespace ServicesTest.MessageTests
+namespace ServicesTest.MessageTests.Put
 {
     [TestFixture]
-    public class SendGroupMessageTest
+    public class UpdateDirectMessageTest
     {
         private readonly IAuthService _authService = new AuthService();
         private static readonly Mapper Mapper = MapperFactory.GetMapperInstance();
-        
-        
+
         [Test]
-        public void SendGroupMessageValidTest()
+        public void UpdateDirectMessage()
         {
             // send code part
             var phone = new Random().Next(500000000, 900000000).ToString();
@@ -50,32 +48,33 @@ namespace ServicesTest.MessageTests
             session.User.Verified.Should().BeFalse();
             session.Tokens.AccessToken.Should().NotBeNullOrEmpty();
             session.Tokens.RefreshToken.Should().NotBeNullOrEmpty();
-            
-            var groupService = new GroupService(session);
-            var groupPayload = new CreateCommunityPayload
-            {
-                Title = "WSB the best",
-                Usernames = new List<string> {"dnldcode", "arslanbek", "petrokolosov"}
-            };
 
-            var group = groupService.CreateGroup(groupPayload);
-            group.Title.Should().Be("WSB the best");
-            group.Description.Should().BeNull();
-            group.MembersCount.Should().Be(4);
-            group.ChatType.Should().Be(TypesOfChat.Group);
-            group.PhotoUrl.Should().BeNull();
-            group.Creator.Name.Should().Be(name);
-            group.Members[3].Name.Should().Be(name);
-            group.Members[2].Username.Should().Be("petrokolosov");
-            group.Members[1].Username.Should().Be("dnldcode");
-            group.Members[0].Username.Should().Be("arslanbek");
-            group.UpdatedAt.Should().BeGreaterThan(0);
-            
+            var chatService = new ChatService(session);
+            var createChatPayload = new CreateDirectChatPayload
+            {
+                Username = "dnldcode"
+            };
+            var directChat = chatService.CreateDirectChat(createChatPayload);
+            directChat.ChatType.Should().Be(TypesOfChat.DirectChat);
+            directChat.Members.Count.Should().Be(2);
+            directChat.Members[0].Username.Should().Be("dnldcode");
+            directChat.Members[1].Name.Should().Be(name);
+            directChat.UpdatedAt.Should().BeGreaterThan(0);
+
             var messageService = new MessageService(session);
-            var groupMessage = messageService.SendMessage(group, "this is test message");
-            groupMessage.MessageText.Should().Be("this is test message");
-            groupMessage = messageService.SendMessage(group, "this is another test message");
-            groupMessage.MessageText.Should().Be("this is another test message");
+            var message = messageService.SendMessage(directChat, "hello its test");
+
+            message.Id.Should().BeGreaterThan(0);
+            message.ChatId.Should().Be(directChat.Id);
+            message.MessageText.Should().Be("hello its test");
+            message.CreatedAt.Should().BeGreaterThan(0);
+            message.UpdatedAt.Should().BeGreaterThan(0);
+
+            var messageId = message.Id;
+            var updateMessage = messageService.UpdateMessage(message, "this is updated message");
+            updateMessage.Should().BeNullOrEmpty();
+            var updatedMessage = messageService.GetMessageById(messageId);
+            updatedMessage.MessageText.Should().Be("this is updated message");
         }
     }
 }

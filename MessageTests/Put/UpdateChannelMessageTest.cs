@@ -9,16 +9,16 @@ using ServicesLibrary.MapperFiles;
 using ServicesLibrary.Models.Payload;
 using ServicesLibrary.Services;
 
-namespace ServicesTest.MessageTests
+namespace ServicesTest.MessageTests.Put
 {
     [TestFixture]
-    public class SendChannelMessageTest
+    public class UpdateChannelMessageTest
     {
         private readonly IAuthService _authService = new AuthService();
         private static readonly Mapper Mapper = MapperFactory.GetMapperInstance();
 
         [Test]
-        public void SendChannelMessageValidTest()
+        public void UpdateChannelMessage()
         {
             // send code part
             var phone = new Random().Next(500000000, 900000000).ToString();
@@ -77,6 +77,12 @@ namespace ServicesTest.MessageTests
             message.MessageText.Should().Be("this is test message");
             message = messageService.SendMessage(channel, "this is another test message");
             message.MessageText.Should().Be("this is another test message");
+
+            var messageId = message.Id;
+            var updateMessage = messageService.UpdateMessage(message, "this is updated message");
+            updateMessage.Should().BeNullOrEmpty();
+            var updatedMessage = messageService.GetMessageById(messageId);
+            updatedMessage.MessageText.Should().Be("this is updated message");
         }
     }
 }
