@@ -66,7 +66,6 @@ namespace ServicesTest.MessageTests
             
             sendMessage.Id.Should().BeGreaterThan(0);
             sendMessage.ChatId.Should().Be(chat.Id);
-            sendMessage.From.Should().Be(session.User);
             sendMessage.MessageText.Should().Be("hello its test");
             sendMessage.CreatedAt.Should().BeGreaterThan(0);
             sendMessage.UpdatedAt.Should().BeGreaterThan(0);
