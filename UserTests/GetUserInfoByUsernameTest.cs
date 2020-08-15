@@ -5,17 +5,18 @@ using NUnit.Framework;
 using ServicesLibrary.Interfaces;
 using ServicesLibrary.MapperFiles;
 using ServicesLibrary.Models.Payload;
+using ServicesLibrary.Services;
 
-namespace ServicesTest.AuthTests
+namespace ServicesTest.UserTests
 {
     [TestFixture]
-    public class LogoutTest
+    public class GetUserInfoByUsernameTest
     {
         private readonly IAuthService _authService = new ServicesLibrary.Services.AuthService();
         private static readonly Mapper Mapper = MapperFactory.GetMapperInstance();
-
+        
         [Test]
-        public void Logout_Test()
+        public void Get_User_Info_By_Username_Test()
         {
             // send code part
             var phone = new Random().Next(500000000, 900000000).ToString();
@@ -47,9 +48,10 @@ namespace ServicesTest.AuthTests
             session.Tokens.AccessToken.Should().NotBeNullOrEmpty();
             session.Tokens.RefreshToken.Should().NotBeNullOrEmpty();
             
-            // logout
-            var logout = _authService.Logout(session);
-            logout.Should().BeNullOrEmpty();
+            var userService = new UserService(session);
+            var user = userService.GetUserInfo("dnldcode");
+            user.Should().NotBeNull();
+            user.Name.Should().Be("Donald");
         }
     }
 }
