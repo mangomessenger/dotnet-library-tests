@@ -20,15 +20,13 @@ namespace ServicesTest.ChatTests
         [Test]
         public void Create_Channel_Async_Test()
         {
-            // send code part
             var phone = new Random().Next(500000000, 900000000).ToString();
             var countryCode = "PL";
             var fingerPrint = Faker.Lorem.Sentence();
 
+            // send code part
             var sendCodePayload = new SendCodePayload(phone, countryCode, fingerPrint);
             var authRequest = _authService.SendCodeAsync(sendCodePayload);
-            authRequest.Result.Should().NotBeNull();
-            authRequest.Result.PhoneNumber.Should().Be("+48" + phone);
 
             // register part
             var name = Faker.Name.FullName();
@@ -40,17 +38,8 @@ namespace ServicesTest.ChatTests
             registerPayload.TermsOfServiceAccepted = true;
             var session = _authService.RegisterAsync(registerPayload);
 
-            // check session data
-            session.Result.User.Id.ToString().Length.Should().BeGreaterThan(5);
-            session.Result.User.Name.Should().Be(name);
-            session.Result.User.Username.Should().BeNull();
-            session.Result.User.Bio.Should().BeNull();
-            session.Result.User.PhotoUrl.Should().BeNull();
-            session.Result.User.Verified.Should().BeFalse();
-            session.Result.Tokens.AccessToken.Should().NotBeNullOrEmpty();
-            session.Result.Tokens.RefreshToken.Should().NotBeNullOrEmpty();
-
             var channelServices = new ChannelService(session.Result);
+            
             var channelPayload = new CreateCommunityPayload
             {
                 Title = "WSB the best",
@@ -58,6 +47,8 @@ namespace ServicesTest.ChatTests
             };
 
             var channel = channelServices.CreateChatAsync(channelPayload);
+            
+            // check channel data
             channel.Result.Title.Should().Be("WSB the best");
             channel.Result.Description.Should().BeNull();
             channel.Result.Creator.Name.Should().Be(name);

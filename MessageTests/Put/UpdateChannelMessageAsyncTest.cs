@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using AutoMapper;
 using FluentAssertions;
 using NUnit.Framework;
-using ServicesLibrary.ChatTypes;
 using ServicesLibrary.Interfaces;
 using ServicesLibrary.MapperFiles;
 using ServicesLibrary.Models.Payload;
@@ -20,15 +19,13 @@ namespace ServicesTest.MessageTests.Put
         [Test]
         public void Update_Channel_Message_Async_Test()
         {
-            // send code part
             var phone = new Random().Next(500000000, 900000000).ToString();
             var countryCode = "PL";
             var fingerPrint = Faker.Lorem.Sentence();
 
+            // send code part
             var sendCodePayload = new SendCodePayload(phone, countryCode, fingerPrint);
             var authRequest = _authService.SendCodeAsync(sendCodePayload);
-            authRequest.Result.Should().NotBeNull();
-            authRequest.Result.PhoneNumber.Should().Be("+48" + phone);
 
             // register part
             var name = Faker.Name.FullName();
@@ -40,16 +37,7 @@ namespace ServicesTest.MessageTests.Put
             registerPayload.TermsOfServiceAccepted = true;
             var session = _authService.RegisterAsync(registerPayload);
 
-            // check session data
-            session.Result.User.Id.ToString().Length.Should().BeGreaterThan(5);
-            session.Result.User.Name.Should().Be(name);
-            session.Result.User.Username.Should().BeNull();
-            session.Result.User.Bio.Should().BeNull();
-            session.Result.User.PhotoUrl.Should().BeNull();
-            session.Result.User.Verified.Should().BeFalse();
-            session.Result.Tokens.AccessToken.Should().NotBeNullOrEmpty();
-            session.Result.Tokens.RefreshToken.Should().NotBeNullOrEmpty();
-
+            // create channel
             var channelServices = new ChannelService(session.Result);
             var channelPayload = new CreateCommunityPayload
             {
@@ -58,35 +46,19 @@ namespace ServicesTest.MessageTests.Put
             };
 
             var channel = channelServices.CreateChatAsync(channelPayload);
-            channel.Result.Title.Should().Be("WSB the best");
-            channel.Result.Description.Should().BeNull();
-            channel.Result.Creator.Name.Should().Be(name);
-            channel.Result.ChatType.Should().Be(TypesOfChat.Channel);
-            channel.Result.Tag.Should().BeNull();
-            channel.Result.PhotoUrl.Should().BeNull();
-            channel.Result.MembersCount.Should().Be(4);
-            channel.Result.Members[3].Name.Should().Be(name);
-            channel.Result.Members[2].Username.Should().Be("petrokolosov");
-            channel.Result.Members[1].Username.Should().Be("dnldcode");
-            channel.Result.Members[0].Username.Should().Be("arslanbek");
-            channel.Result.Verified.Should().BeFalse();
-            channel.Result.UpdatedAt.Should().BeGreaterThan(0);
 
+            // send message
             var messageService = new MessageService(session.Result);
-            var m1 = messageService.SendMessageAsync(channel.Result, "this is test message");
+            var m1 = messageService.SendMessageAsync(channel.Result,
+                "this is test message");
             m1.Result.MessageText.Should().Be("this is test message");
 
-            var m2 = messageService.SendMessageAsync(channel.Result, "this is another test message");
-            m2.Result.MessageText.Should().Be("this is another test message");
-
-            var channelMessages = messageService.GetMessagesAsync(channel.Result);
-            channelMessages.Result.Count.Should().Be(2);
-            channelMessages.Result[0].MessageText.Should().Be("this is test message");
-            channelMessages.Result[1].MessageText.Should().Be("this is another test message");
-
+            // update message and check
             var id = m1.Result.Id;
-            var updateMessage = messageService.UpdateMessageAsync(m1.Result, "this is updated message");
-            updateMessage.Result.Should().BeNullOrEmpty();
+            var message1 = messageService.UpdateMessageAsync(m1.Result,
+                "this is updated message");
+            message1.Result.Should().BeNullOrEmpty();
+
             var messageById = messageService.GetMessageByIdAsync(id);
             messageById.Result.MessageText.Should().Be("this is updated message");
         }

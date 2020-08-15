@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using AutoMapper;
 using FluentAssertions;
 using NUnit.Framework;
-using ServicesLibrary.ChatTypes;
 using ServicesLibrary.Interfaces;
 using ServicesLibrary.MapperFiles;
 using ServicesLibrary.Models.Payload;
@@ -20,15 +19,13 @@ namespace ServicesTest.MessageTests.Delete
         [Test]
         public void Delete_Group_Message_Async_Test()
         {
-            // send code part
             var phone = new Random().Next(500000000, 900000000).ToString();
             var countryCode = "PL";
             var fingerPrint = Faker.Lorem.Sentence();
 
+            // send code part
             var sendCodePayload = new SendCodePayload(phone, countryCode, fingerPrint);
             var authRequest = _authService.SendCodeAsync(sendCodePayload);
-            authRequest.Result.Should().NotBeNull();
-            authRequest.Result.PhoneNumber.Should().Be("+48" + phone);
 
             // register part
             var name = Faker.Name.FullName();
@@ -40,17 +37,9 @@ namespace ServicesTest.MessageTests.Delete
             registerPayload.TermsOfServiceAccepted = true;
             var session = _authService.RegisterAsync(registerPayload);
 
-            // check session data
-            session.Result.User.Id.ToString().Length.Should().BeGreaterThan(5);
-            session.Result.User.Name.Should().Be(name);
-            session.Result.User.Username.Should().BeNull();
-            session.Result.User.Bio.Should().BeNull();
-            session.Result.User.PhotoUrl.Should().BeNull();
-            session.Result.User.Verified.Should().BeFalse();
-            session.Result.Tokens.AccessToken.Should().NotBeNullOrEmpty();
-            session.Result.Tokens.RefreshToken.Should().NotBeNullOrEmpty();
-
+            // create group part
             var groupService = new GroupService(session.Result);
+            
             var groupPayload = new CreateCommunityPayload
             {
                 Title = "WSB the best",
@@ -58,22 +47,13 @@ namespace ServicesTest.MessageTests.Delete
             };
 
             var group = groupService.CreateChatAsync(groupPayload);
-            group.Result.Title.Should().Be("WSB the best");
-            group.Result.Description.Should().BeNull();
-            group.Result.MembersCount.Should().Be(4);
-            group.Result.ChatType.Should().Be(TypesOfChat.Group);
-            group.Result.PhotoUrl.Should().BeNull();
-            group.Result.Creator.Name.Should().Be(name);
-            group.Result.Members[3].Name.Should().Be(name);
-            group.Result.Members[2].Username.Should().Be("petrokolosov");
-            group.Result.Members[1].Username.Should().Be("dnldcode");
-            group.Result.Members[0].Username.Should().Be("arslanbek");
-            group.Result.UpdatedAt.Should().BeGreaterThan(0);
             
+            // send message part
             var messageService = new MessageService(session.Result);
             var m1 = messageService.SendMessageAsync(group.Result, "this is test message");
             m1.Result.MessageText.Should().Be("this is test message");
 
+            // delete message part
             var deleteMessage = messageService.DeleteMessageAsync(m1.Result);
             deleteMessage.Result.Should().BeNullOrEmpty();
         }

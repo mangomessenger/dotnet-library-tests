@@ -21,6 +21,7 @@ namespace ServicesTest.AuthTests
 
             var sendCodePayload = new SendCodePayload(phone, countryCode, fingerPrint);
             var authRequest = _authService.SendCodeAsync(sendCodePayload);
+            
             authRequest.Result.Should().NotBeNull();
             authRequest.Result.PhoneNumber.Should().Be("+48" + phone);
             authRequest.Result.IsNew.Should().BeTrue();

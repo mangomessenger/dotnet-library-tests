@@ -2,7 +2,6 @@
 using AutoMapper;
 using FluentAssertions;
 using NUnit.Framework;
-using ServicesLibrary.ChatTypes;
 using ServicesLibrary.Interfaces;
 using ServicesLibrary.MapperFiles;
 using ServicesLibrary.Models.Payload;
@@ -19,15 +18,13 @@ namespace ServicesTest.MessageTests.Delete
         [Test]
         public void Delete_Direct_Message_Async_Test()
         {
-            // send code part
             var phone = new Random().Next(500000000, 900000000).ToString();
             var countryCode = "PL";
             var fingerPrint = Faker.Lorem.Sentence();
 
+            // send code part
             var sendCodePayload = new SendCodePayload(phone, countryCode, fingerPrint);
             var authRequest = _authService.SendCodeAsync(sendCodePayload);
-            authRequest.Result.Should().NotBeNull();
-            authRequest.Result.PhoneNumber.Should().Be("+48" + phone);
 
             // register part
             var name = Faker.Name.FullName();
@@ -39,33 +36,21 @@ namespace ServicesTest.MessageTests.Delete
             registerPayload.TermsOfServiceAccepted = true;
             var session = _authService.RegisterAsync(registerPayload);
 
-            // check session data
-            session.Result.User.Id.ToString().Length.Should().BeGreaterThan(5);
-            session.Result.User.Name.Should().Be(name);
-            session.Result.User.Username.Should().BeNull();
-            session.Result.User.Bio.Should().BeNull();
-            session.Result.User.PhotoUrl.Should().BeNull();
-            session.Result.User.Verified.Should().BeFalse();
-            session.Result.Tokens.AccessToken.Should().NotBeNullOrEmpty();
-            session.Result.Tokens.RefreshToken.Should().NotBeNullOrEmpty();
-
+            // create chat part
             var chatService = new DirectChatService(session.Result);
+            
             var createChatPayload = new CreateDirectChatPayload
             {
                 Username = "petrokolosov"
             };
 
             var chat = chatService.CreateChatAsync(createChatPayload);
-            chat.Result.ChatType.Should().Be(TypesOfChat.DirectChat);
-            chat.Result.Members.Count.Should().Be(2);
-            chat.Result.Members[0].Username.Should().Be("petrokolosov");
-            chat.Result.Members[1].Name.Should().Be(name);
-            chat.Result.UpdatedAt.Should().BeGreaterThan(0);
 
+            // send message part
             var messageService = new MessageService(session.Result);
             var m1 = messageService.SendMessageAsync(chat.Result, "this is test message");
-            m1.Result.MessageText.Should().Be("this is test message");
 
+            // delete message part
             var deleteMessage = messageService.DeleteMessageAsync(m1.Result);
             deleteMessage.Result.Should().BeNullOrEmpty();
         }

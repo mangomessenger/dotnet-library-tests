@@ -18,15 +18,13 @@ namespace ServicesTest.AuthTests
         [Test]
         public void Register_Async_Test()
         {
-            // send code part
             var phone = new Random().Next(500000000, 900000000).ToString();
             var countryCode = "PL";
             var fingerPrint = Faker.Lorem.Sentence();
             
+            // send code part
             var sendCodePayload = new SendCodePayload(phone, countryCode, fingerPrint);
             var authRequest = _authService.SendCodeAsync(sendCodePayload);
-            authRequest.Result.Should().NotBeNull();
-            authRequest.Result.PhoneNumber.Should().Be("+48" + phone);
 
             // register part
             var name = Faker.Name.FullName();
