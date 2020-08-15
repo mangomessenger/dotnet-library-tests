@@ -49,7 +49,7 @@ namespace ServicesTest.AuthTests
             
             // logout
             var logout = _authService.Logout(session);
-            logout.Should().BeTrue();
+            logout.Should().BeNullOrEmpty();
         }
     }
 }

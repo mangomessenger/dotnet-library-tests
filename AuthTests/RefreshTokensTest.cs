@@ -49,7 +49,7 @@ namespace ServicesTest.AuthTests
 
             // refresh token part
             var tokenPayload = new RefreshTokensPayload(session.Tokens.RefreshToken, fingerPrint);
-            var token = _authService.RefreshToken(tokenPayload);
+            var token = _authService.RefreshTokens(tokenPayload);
             token.AccessToken.Should().NotBeNullOrEmpty();
             token.RefreshToken.Should().NotBeNullOrEmpty();
         }

@@ -15,7 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ServicesLibrary\ServicesLibrary.csproj" />
+      <ProjectReference Include="..\dotnet-mango-library\ServicesLibrary.csproj" />
     </ItemGroup>
 
 </Project>

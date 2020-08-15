@@ -2,9 +2,9 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicesTest", "ServicesTest.csproj", "{6DD76D70-B354-4313-9C67-137C971B9C5C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicesLibrary", "..\ServicesLibrary\ServicesLibrary.csproj", "{6E71463A-2F03-4601-8DD7-5EFF5515D738}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleUI", "..\ConsoleUI\ConsoleUI.csproj", "{B0DEF236-893B-45B0-A789-D0B399FE0EE8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicesLibrary", "..\dotnet-mango-library\ServicesLibrary.csproj", "{8C53D581-F4B7-4163-8415-5CF8F8C39778}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,13 +16,13 @@ Global
 		{6DD76D70-B354-4313-9C67-137C971B9C5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6DD76D70-B354-4313-9C67-137C971B9C5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6DD76D70-B354-4313-9C67-137C971B9C5C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6E71463A-2F03-4601-8DD7-5EFF5515D738}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6E71463A-2F03-4601-8DD7-5EFF5515D738}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6E71463A-2F03-4601-8DD7-5EFF5515D738}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6E71463A-2F03-4601-8DD7-5EFF5515D738}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B0DEF236-893B-45B0-A789-D0B399FE0EE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B0DEF236-893B-45B0-A789-D0B399FE0EE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0DEF236-893B-45B0-A789-D0B399FE0EE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0DEF236-893B-45B0-A789-D0B399FE0EE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C53D581-F4B7-4163-8415-5CF8F8C39778}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C53D581-F4B7-4163-8415-5CF8F8C39778}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C53D581-F4B7-4163-8415-5CF8F8C39778}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C53D581-F4B7-4163-8415-5CF8F8C39778}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
