@@ -39,7 +39,7 @@ namespace ServicesTest.MessageTests.Put
 
             // create group
             var groupService = new GroupService(session.Result);
-            
+
             var groupPayload = new CreateCommunityPayload
             {
                 Title = "WSB the best",
@@ -50,7 +50,7 @@ namespace ServicesTest.MessageTests.Put
 
             // send message
             var messageService = new MessageService(session.Result);
-            var m1 = messageService.SendMessageAsync(group.Result, 
+            var m1 = messageService.SendMessageAsync(group.Result,
                 "this is test message");
             m1.Result.MessageText.Should().Be("this is test message");
 
@@ -62,7 +62,6 @@ namespace ServicesTest.MessageTests.Put
             updateMessage.Result.Should().BeNullOrEmpty();
             var messageById = messageService.GetMessageByIdAsync(id);
             messageById.Result.MessageText.Should().Be("this is updated message");
-
         }
     }
 }
