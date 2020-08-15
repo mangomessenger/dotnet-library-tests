@@ -12,13 +12,13 @@ using ServicesLibrary.Services;
 namespace ServicesTest.MessageTests.Get
 {
     [TestFixture]
-    public class GetChannelMessagesTest
+    public class GetMessageByIdAsyncTest
     {
         private readonly IAuthService _authService = new AuthService();
         private static readonly Mapper Mapper = MapperFactory.GetMapperInstance();
         
         [Test]
-        public void Get_Channel_Messages_Async_Test()
+        public void Get_Message_By_Id_Async_Test()
         {
             // send code part
             var phone = new Random().Next(500000000, 900000000).ToString();
@@ -71,17 +71,16 @@ namespace ServicesTest.MessageTests.Get
             channel.Result.Members[0].Username.Should().Be("arslanbek");
             channel.Result.Verified.Should().BeFalse();
             channel.Result.UpdatedAt.Should().BeGreaterThan(0);
-
+            
             var messageService = new MessageService(session.Result);
-            var message = messageService.SendMessageAsync(channel.Result, "this is test message");
-            message.Result.MessageText.Should().Be("this is test message");
-            message = messageService.SendMessageAsync(channel.Result, "this is another test message");
-            message.Result.MessageText.Should().Be("this is another test message");
+            var message = messageService.SendMessage(channel.Result, "this is test message");
+            message.MessageText.Should().Be("this is test message");
+            message = messageService.SendMessage(channel.Result, "this is another test message");
+            message.MessageText.Should().Be("this is another test message");
 
-            var channelMessages = messageService.GetMessagesAsync(channel.Result);
-            channelMessages.Result.Count.Should().Be(2);
-            channelMessages.Result[0].MessageText.Should().Be("this is test message");
-            channelMessages.Result[1].MessageText.Should().Be("this is another test message");
+            var messageId = message.Id;
+            var getMessage = messageService.GetMessageByIdAsync(messageId);
+            getMessage.Result.MessageText.Should().Be("this is another test message");
         }
     }
 }
