@@ -4,13 +4,14 @@ using NUnit.Framework;
 using ServicesLibrary.Exceptions.Auth;
 using ServicesLibrary.Interfaces;
 using ServicesLibrary.Models.Payload;
+using ServicesLibrary.Services;
 
 namespace ServicesTest.AuthTests
 {
     [TestFixture]
     public class SendCodeTest
     {
-        private readonly IAuthService _authService = new ServicesLibrary.Services.AuthService();
+        private readonly IAuthService _authService = new AuthService();
 
         [Test]
         public void Send_Code_Test()

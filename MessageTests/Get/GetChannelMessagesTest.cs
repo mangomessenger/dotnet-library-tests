@@ -78,9 +78,10 @@ namespace ServicesTest.MessageTests.Get
             message = messageService.SendMessage(channel, "this is another test message");
             message.MessageText.Should().Be("this is another test message");
 
-            var channelMessages = messageService.GetMessages(channel, out var response);
-            response.Should().BeNullOrEmpty();
-            channelMessages.Should().NotBeNull();
+            var channelMessages = messageService.GetMessagesAsync(channel);
+            channelMessages.Result.Count.Should().Be(2);
+            channelMessages.Result[0].MessageText.Should().Be("this is test message");
+            channelMessages.Result[1].MessageText.Should().Be("this is another test message");
         }
     }
 }

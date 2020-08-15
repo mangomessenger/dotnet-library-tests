@@ -5,13 +5,14 @@ using NUnit.Framework;
 using ServicesLibrary.Interfaces;
 using ServicesLibrary.MapperFiles;
 using ServicesLibrary.Models.Payload;
+using ServicesLibrary.Services;
 
 namespace ServicesTest.AuthTests
 {
     [TestFixture]
     public class LogoutTest
     {
-        private readonly IAuthService _authService = new ServicesLibrary.Services.AuthService();
+        private readonly IAuthService _authService = new AuthService();
         private static readonly Mapper Mapper = MapperFactory.GetMapperInstance();
 
         [Test]
