@@ -68,59 +68,5 @@ namespace ServicesTest.AuthTests
             loginSession.Tokens.AccessToken.Should().NotBeNullOrEmpty();
             loginSession.Tokens.RefreshToken.Should().NotBeNullOrEmpty();
         }
-
-        [Test]
-        public void Login_Async_Test()
-        {
-            // send code part
-            var phone = new Random().Next(500000000, 900000000).ToString();
-            var countryCode = "PL";
-            var fingerPrint = Faker.Lorem.Sentence();
-            
-            var sendCodePayload = new SendCodePayload(phone, countryCode, fingerPrint);
-            var authRequest = _authService.SendCodeAsync(sendCodePayload);
-            authRequest.Should().NotBeNull();
-            authRequest.Result.PhoneNumber.Should().Be("+48" + phone);
-
-            // register part
-            var name = Faker.Name.FullName();
-            var phoneCode = 22222;
-            
-            var registerPayload = Mapper.Map<RegisterPayload>(authRequest.Result);
-            registerPayload.Name = name;
-            registerPayload.PhoneCode = phoneCode;
-            registerPayload.TermsOfServiceAccepted = true;
-            var session = _authService.RegisterAsync(registerPayload);
-
-            // check session data
-            session.Result.User.Id.ToString().Length.Should().BeGreaterThan(5);
-            session.Result.User.Name.Should().Be(name);
-            session.Result.User.Username.Should().BeNull();
-            session.Result.User.Bio.Should().BeNull();
-            session.Result.User.PhotoUrl.Should().BeNull();
-            session.Result.User.Verified.Should().BeFalse();
-            session.Result.Tokens.AccessToken.Should().NotBeNullOrEmpty();
-            session.Result.Tokens.RefreshToken.Should().NotBeNullOrEmpty();
-            
-            // logout
-            var logout = _authService.LogoutAsync(session.Result);
-            logout.Result.Should().BeNullOrEmpty();
-
-            // login again
-            authRequest = _authService.SendCodeAsync(sendCodePayload);
-            var loginPayload = Mapper.Map<LoginPayload>(authRequest.Result);
-            loginPayload.PhoneCode = 22222;
-            var loginSession = _authService.LoginAsync(loginPayload);
-            loginSession.Result.Should().NotBeNull();
-            loginSession.Result.User.Should().NotBeNull();
-            loginSession.Result.User.Id.ToString().Length.Should().BeGreaterThan(5);
-            loginSession.Result.User.Name.Should().Be(name);
-            loginSession.Result.User.Username.Should().BeNull();
-            loginSession.Result.User.Bio.Should().BeNull();
-            loginSession.Result.User.PhotoUrl.Should().BeNull();
-            loginSession.Result.User.Verified.Should().BeFalse();
-            loginSession.Result.Tokens.AccessToken.Should().NotBeNullOrEmpty();
-            loginSession.Result.Tokens.RefreshToken.Should().NotBeNullOrEmpty();
-        }
     }
 }
