@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using AutoMapper;
 using FluentAssertions;
 using NUnit.Framework;
@@ -12,19 +11,19 @@ using ServicesLibrary.Services;
 namespace ServicesTest.MessageTests.Get
 {
     [TestFixture]
-    public class GetChannelMessagesAsyncTest
+    public class GetDirectChatMessagesAsync
     {
         private readonly IAuthService _authService = new AuthService();
         private static readonly Mapper Mapper = MapperFactory.GetMapperInstance();
-        
+
         [Test]
-        public void Get_Channel_Messages_Async_Test()
+        public void Get_Direct_Chat_Messages_Async()
         {
             // send code part
             var phone = new Random().Next(500000000, 900000000).ToString();
             var countryCode = "PL";
             var fingerPrint = Faker.Lorem.Sentence();
-            
+
             var sendCodePayload = new SendCodePayload(phone, countryCode, fingerPrint);
             var authRequest = _authService.SendCodeAsync(sendCodePayload);
             authRequest.Result.Should().NotBeNull();
@@ -33,7 +32,7 @@ namespace ServicesTest.MessageTests.Get
             // register part
             var name = Faker.Name.FullName();
             var phoneCode = 22222;
-            
+
             var registerPayload = Mapper.Map<RegisterPayload>(authRequest.Result);
             registerPayload.Name = name;
             registerPayload.PhoneCode = phoneCode;
@@ -49,37 +48,28 @@ namespace ServicesTest.MessageTests.Get
             session.Result.User.Verified.Should().BeFalse();
             session.Result.Tokens.AccessToken.Should().NotBeNullOrEmpty();
             session.Result.Tokens.RefreshToken.Should().NotBeNullOrEmpty();
-            
-            var channelServices = new ChannelService(session.Result);
-            var channelPayload = new CreateCommunityPayload
+
+            var chatService = new DirectChatService(session.Result);
+            var createChatPayload = new CreateDirectChatPayload
             {
-                Title = "WSB the best",
-                Usernames = new List<string> {"dnldcode", "arslanbek", "petrokolosov"}
+                Username = "petrokolosov"
             };
 
-            var channel = channelServices.CreateChatAsync(channelPayload);
-            channel.Result.Title.Should().Be("WSB the best");
-            channel.Result.Description.Should().BeNull();
-            channel.Result.Creator.Name.Should().Be(name);
-            channel.Result.ChatType.Should().Be(TypesOfChat.Channel);
-            channel.Result.Tag.Should().BeNull();
-            channel.Result.PhotoUrl.Should().BeNull();
-            channel.Result.MembersCount.Should().Be(4);
-            channel.Result.Members[3].Name.Should().Be(name);
-            channel.Result.Members[2].Username.Should().Be("petrokolosov");
-            channel.Result.Members[1].Username.Should().Be("dnldcode");
-            channel.Result.Members[0].Username.Should().Be("arslanbek");
-            channel.Result.Verified.Should().BeFalse();
-            channel.Result.UpdatedAt.Should().BeGreaterThan(0);
+            var chat = chatService.CreateChatAsync(createChatPayload);
+            chat.Result.ChatType.Should().Be(TypesOfChat.DirectChat);
+            chat.Result.Members.Count.Should().Be(2);
+            chat.Result.Members[0].Username.Should().Be("petrokolosov");
+            chat.Result.Members[1].Name.Should().Be(name);
+            chat.Result.UpdatedAt.Should().BeGreaterThan(0);
 
             var messageService = new MessageService(session.Result);
-            var m1 = messageService.SendMessageAsync(channel.Result, "this is test message");
+            var m1 = messageService.SendMessageAsync(chat.Result, "this is test message");
             m1.Result.MessageText.Should().Be("this is test message");
-            
-            var m2 = messageService.SendMessageAsync(channel.Result, "this is another test message");
+
+            var m2 = messageService.SendMessageAsync(chat.Result, "this is another test message");
             m2.Result.MessageText.Should().Be("this is another test message");
-            
-            var channelMessages = messageService.GetMessagesAsync(channel.Result);
+
+            var channelMessages = messageService.GetMessagesAsync(chat.Result);
             channelMessages.Result.Count.Should().Be(2);
             channelMessages.Result[0].MessageText.Should().Be("this is test message");
             channelMessages.Result[1].MessageText.Should().Be("this is another test message");

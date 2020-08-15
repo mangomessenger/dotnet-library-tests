@@ -9,22 +9,22 @@ using ServicesLibrary.MapperFiles;
 using ServicesLibrary.Models.Payload;
 using ServicesLibrary.Services;
 
-namespace ServicesTest.MessageTests.Get
+namespace ServicesTest.MessageTests.Put
 {
     [TestFixture]
-    public class GetChannelMessagesAsyncTest
+    public class UpdateChannelMessageAsyncTest
     {
         private readonly IAuthService _authService = new AuthService();
         private static readonly Mapper Mapper = MapperFactory.GetMapperInstance();
-        
+
         [Test]
-        public void Get_Channel_Messages_Async_Test()
+        public void Update_Channel_Message_Async_Test()
         {
             // send code part
             var phone = new Random().Next(500000000, 900000000).ToString();
             var countryCode = "PL";
             var fingerPrint = Faker.Lorem.Sentence();
-            
+
             var sendCodePayload = new SendCodePayload(phone, countryCode, fingerPrint);
             var authRequest = _authService.SendCodeAsync(sendCodePayload);
             authRequest.Result.Should().NotBeNull();
@@ -33,7 +33,7 @@ namespace ServicesTest.MessageTests.Get
             // register part
             var name = Faker.Name.FullName();
             var phoneCode = 22222;
-            
+
             var registerPayload = Mapper.Map<RegisterPayload>(authRequest.Result);
             registerPayload.Name = name;
             registerPayload.PhoneCode = phoneCode;
@@ -49,7 +49,7 @@ namespace ServicesTest.MessageTests.Get
             session.Result.User.Verified.Should().BeFalse();
             session.Result.Tokens.AccessToken.Should().NotBeNullOrEmpty();
             session.Result.Tokens.RefreshToken.Should().NotBeNullOrEmpty();
-            
+
             var channelServices = new ChannelService(session.Result);
             var channelPayload = new CreateCommunityPayload
             {
@@ -75,14 +75,20 @@ namespace ServicesTest.MessageTests.Get
             var messageService = new MessageService(session.Result);
             var m1 = messageService.SendMessageAsync(channel.Result, "this is test message");
             m1.Result.MessageText.Should().Be("this is test message");
-            
+
             var m2 = messageService.SendMessageAsync(channel.Result, "this is another test message");
             m2.Result.MessageText.Should().Be("this is another test message");
-            
+
             var channelMessages = messageService.GetMessagesAsync(channel.Result);
             channelMessages.Result.Count.Should().Be(2);
             channelMessages.Result[0].MessageText.Should().Be("this is test message");
             channelMessages.Result[1].MessageText.Should().Be("this is another test message");
+
+            var id = m1.Result.Id;
+            var updateMessage = messageService.UpdateMessageAsync(m1.Result, "this is updated message");
+            updateMessage.Result.Should().BeNullOrEmpty();
+            var messageById = messageService.GetMessageByIdAsync(id);
+            messageById.Result.MessageText.Should().Be("this is updated message");
         }
     }
 }
