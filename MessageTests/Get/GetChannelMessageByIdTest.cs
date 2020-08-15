@@ -57,7 +57,7 @@ namespace ServicesTest.MessageTests.Get
                 Usernames = new List<string> {"dnldcode", "arslanbek", "petrokolosov"}
             };
 
-            var channel = channelServices.CreateChannel(channelPayload);
+            var channel = channelServices.CreateChat(channelPayload);
             channel.Title.Should().Be("WSB the best");
             channel.Description.Should().BeNull();
             channel.Creator.Name.Should().Be(name);

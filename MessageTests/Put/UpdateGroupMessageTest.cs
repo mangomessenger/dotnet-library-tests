@@ -57,7 +57,7 @@ namespace ServicesTest.MessageTests.Put
                 Usernames = new List<string> {"dnldcode", "arslanbek", "petrokolosov"}
             };
 
-            var group = groupService.CreateGroup(groupPayload);
+            var group = groupService.CreateChat(groupPayload);
             group.Title.Should().Be("WSB the best");
             group.Description.Should().BeNull();
             group.MembersCount.Should().Be(4);

@@ -49,12 +49,12 @@ namespace ServicesTest.MessageTests.Delete
             session.Tokens.AccessToken.Should().NotBeNullOrEmpty();
             session.Tokens.RefreshToken.Should().NotBeNullOrEmpty();
 
-            var chatService = new ChatService(session);
+            var chatService = new DirectChatService(session);
             var createChatPayload = new CreateDirectChatPayload
             {
                 Username = "dnldcode"
             };
-            var directChat = chatService.CreateDirectChat(createChatPayload);
+            var directChat = chatService.CreateChat(createChatPayload);
             directChat.ChatType.Should().Be(TypesOfChat.DirectChat);
             directChat.Members.Count.Should().Be(2);
             directChat.Members[0].Username.Should().Be("dnldcode");
