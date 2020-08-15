@@ -10,6 +10,8 @@ This project requeres reference to the https://github.com/mangomessenger/dotnet-
 ## To do
 
 1. Change test methods naming according to https://docs.microsoft.com/pl-pl/dotnet/core/testing/unit-testing-best-practices
+2. Refactor tests. Remove unnecessary checks which in another tests
+
 
 ## Roadmap
 
