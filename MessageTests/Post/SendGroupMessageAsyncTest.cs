@@ -45,7 +45,7 @@ namespace ServicesTest.MessageTests.Post
                 Usernames = new List<string> {"dnldcode", "arslanbek", "petrokolosov"}
             };
 
-            var group = groupService.CreateChatAsync(groupPayload);
+            var group = groupService.CreateGroupAsync(groupPayload);
 
             // send messages
             var messageService = new MessageService(session.Result);

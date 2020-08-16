@@ -47,7 +47,7 @@ namespace ServicesTest.ChatTests
                 Usernames = new List<string> {"dnldcode", "arslanbek", "petrokolosov"}
             };
 
-            var group = groupService.CreateChatAsync(groupPayload);
+            var group = groupService.CreateGroupAsync(groupPayload);
             
             // check group data
             group.Result.Title.Should().Be("WSB the best");

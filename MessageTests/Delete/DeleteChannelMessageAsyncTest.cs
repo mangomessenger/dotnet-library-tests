@@ -46,7 +46,7 @@ namespace ServicesTest.MessageTests.Delete
                 Usernames = new List<string> {"dnldcode", "arslanbek", "petrokolosov"}
             };
 
-            var channel = channelServices.CreateChatAsync(channelPayload);
+            var channel = channelServices.CreateChannelAsync(channelPayload);
 
             // send message part
             var messageService = new MessageService(session.Result);

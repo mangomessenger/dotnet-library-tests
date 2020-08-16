@@ -46,7 +46,7 @@ namespace ServicesTest.MessageTests.Delete
                 Usernames = new List<string> {"dnldcode", "arslanbek", "petrokolosov"}
             };
 
-            var group = groupService.CreateChatAsync(groupPayload);
+            var group = groupService.CreateGroupAsync(groupPayload);
             
             // send message part
             var messageService = new MessageService(session.Result);
