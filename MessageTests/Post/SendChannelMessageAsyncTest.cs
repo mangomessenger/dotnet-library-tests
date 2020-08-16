@@ -45,7 +45,7 @@ namespace ServicesTest.MessageTests.Post
                 Usernames = new List<string> {"dnldcode", "arslanbek", "petrokolosov"}
             };
 
-            var channel = channelServices.CreateChatAsync(channelPayload);
+            var channel = channelServices.CreateChannelAsync(channelPayload);
 
             // send messages to channel
             var messageService = new MessageService(session.Result);

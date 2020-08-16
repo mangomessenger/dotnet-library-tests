@@ -46,7 +46,7 @@ namespace ServicesTest.ChatTests
                 Usernames = new List<string> {"dnldcode", "arslanbek", "petrokolosov"}
             };
 
-            var channel = channelServices.CreateChatAsync(channelPayload);
+            var channel = channelServices.CreateChannelAsync(channelPayload);
             
             // check channel data
             channel.Result.Title.Should().Be("WSB the best");
